@@ -29,8 +29,8 @@
 #include "mkl_blas.h"
 #include "mkl_cblas.h"
 
-#include "onemkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 #include "onemkl/types.hpp"
+#include "onemkl/blas/detail/mklcpu/onemkl_blas_mklcpu.hpp"
 
 namespace onemkl {
 namespace mklcpu {

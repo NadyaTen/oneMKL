@@ -18,6 +18,7 @@
 *******************************************************************************/
 
 #include "loader.hpp"
+#include "onemkl/blas/detail/blas_loader.hpp"
 
 namespace onemkl {
 namespace blas {

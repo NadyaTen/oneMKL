@@ -21,6 +21,7 @@
 
 #include "mkl_internal_blas_gpu_wrappers.hpp"
 #include "onemkl/types.hpp"
+#include "onemkl/blas/detail/mklgpu/onemkl_blas_mklgpu.hpp"
 
 namespace onemkl {
 namespace mklgpu {
