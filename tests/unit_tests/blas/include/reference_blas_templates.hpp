@@ -24,17 +24,79 @@
 #include <complex>
 #include "cblas.h"
 
+#ifdef __linux__
+    #include <dlfcn.h>
+    #define LIB_TYPE                 void *
+    #define GET_LIB_HANDLE(libname)  dlopen((libname), RTLD_LAZY | RTLD_GLOBAL)
+    #define GET_FUNC(lib, fn)        dlsym(lib, (fn))
+#elif defined(_WIN64)
+    #include <windows.h>
+    #define LIB_TYPE                 HINSTANCE
+    #define GET_LIB_HANDLE(libname)  LoadLibrary(libname)
+    #define GET_FUNC(lib, fn)        GetProcAddress((lib), (fn))
+#endif
+
 extern "C" {
+static LIB_TYPE h = NULL;
+static void (* csrot_p)(const int *N, void *X, const int *incX, void *Y, const int *incY,
+             const float *c, const float *s);
+static void (* zdrot_p)(const int *N, void *X, const int *incX, void *Y, const int *incY,
+             const double *c, const double *s);
+static void (* crotg_p)(void *a, void *b, const float *c, void *s);
+static void (* zrotg_p)(void *a, void *b, const double *c, void *s);
 
-void csrot_(const int *N, void *X, const int *incX, void *Y, const int *incY, const float *c,
-            const float *s);
+static LIB_TYPE cblas_library() {
+    if (h == NULL) {
+#ifdef _WIN64
+        h = GET_LIB_HANDLE("libblas.dll");
+        if (h == NULL)
+            h = GET_LIB_HANDLE("blas.dll");
+#else
+        h = GET_LIB_HANDLE("libblas.so");
+#endif
+    }
+    return h;
+}
 
-void zdrot_(const int *N, void *X, const int *incX, void *Y, const int *incY, const double *c,
-            const double *s);
+static void onemkl_csrot(const int *N, void *X, const int *incX, void *Y, const int *incY, const float *c,
+            const float *s) {
+    if (cblas_library() != NULL) {
+        if (csrot_p == NULL)
+            csrot_p = (void (*)(const int *N, void *X, const int *incX, void *Y, const int *incY, const float *c,
+                       const float *s)) GET_FUNC(h, "csrot_");
+        if (csrot_p != NULL)
+            csrot_p(N, X, incX, Y, incY, c, s);
+    }
+}
 
-void crotg_(void *a, void *b, const float *c, void *s);
+static void onemkl_zdrot(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                         const double *c, const double *s) {
+    if (cblas_library() != NULL) {
+        if (zdrot_p == NULL)
+            zdrot_p = (void (*)(const int *N, void *X, const int *incX, void *Y, const int *incY,
+                                const double *c, const double *s)) GET_FUNC(h, "zdrot_");
+        if (zdrot_p != NULL)
+            zdrot_p(N, X, incX, Y, incY, c, s);
+    }
+}
 
-void zrotg_(void *a, void *b, const double *c, void *s);
+static void onemkl_crotg(void *a, void *b, const float *c, void *s) {
+    if (cblas_library() != NULL) {
+        if (crotg_p == NULL)
+            crotg_p = (void (*)(void *a, void *b, const float *c, void *s)) GET_FUNC(h, "crotg_");
+        if (crotg_p != NULL)
+            crotg_p(a, b, c, s);
+    }
+}
+
+static void onemkl_zrotg(void *a, void *b, const double *c, void *s) {
+    if (cblas_library() != NULL) {
+        if (zrotg_p == NULL)
+            zrotg_p = (void (*)(void *a, void *b, const double *c, void *s)) GET_FUNC(h, "zrotg_");
+        if (zrotg_p != NULL)
+            zrotg_p(a, b, c, s);
+    }
+}
 }
 
 template <typename T_src, typename T_dest>
@@ -1103,13 +1165,13 @@ void rot(const int *n, double *x, const int *incx, double *y, const int *incy, c
 template <>
 void rot(const int *n, std::complex<float> *x, const int *incx, std::complex<float> *y,
          const int *incy, const float *c, const float *s) {
-    csrot_(n, (void *)x, incx, (void *)y, incy, c, s);
+    onemkl_csrot(n, (void *)x, incx, (void *)y, incy, c, s);
 }
 
 template <>
 void rot(const int *n, std::complex<double> *x, const int *incx, std::complex<double> *y,
          const int *incy, const double *c, const double *s) {
-    zdrot_(n, (void *)x, incx, (void *)y, incy, c, s);
+    onemkl_zdrot(n, (void *)x, incx, (void *)y, incy, c, s);
 }
 
 template <typename fp, typename fp_c>
@@ -1127,12 +1189,12 @@ void rotg(double *a, double *b, double *c, double *s) {
 
 template <>
 void rotg(std::complex<float> *a, std::complex<float> *b, float *c, std::complex<float> *s) {
-    crotg_((void *)a, (void *)b, c, (void *)s);
+    onemkl_crotg((void *)a, (void *)b, c, (void *)s);
 }
 
 template <>
 void rotg(std::complex<double> *a, std::complex<double> *b, double *c, std::complex<double> *s) {
-    zrotg_((void *)a, (void *)b, c, (void *)s);
+    onemkl_zrotg((void *)a, (void *)b, c, (void *)s);
 }
 
 template <typename fp>

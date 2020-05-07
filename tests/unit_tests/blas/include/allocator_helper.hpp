@@ -25,6 +25,26 @@
 #include <limits>
 #include <type_traits>
 
+#ifdef _WIN64
+#include <malloc.h>
+#endif
+
+static inline void *blas_aligned_alloc(size_t align, size_t size) {
+#ifdef _WIN64
+    return _aligned_malloc(size, align);
+#else
+    return aligned_alloc(align, size);
+#endif
+}
+
+static inline void blas_aligned_free(void *p) {
+#ifdef _WIN64
+    _aligned_free(p);
+#else
+    free(p);
+#endif
+}
+
 template <typename T, int align>
 struct allocator_helper {
     typedef T* pointer;
@@ -47,7 +67,7 @@ struct allocator_helper {
     allocator_helper(allocator_helper<U, align2>&& other) noexcept {}
 
     T* allocate(size_t n) {
-        void* mem = aligned_alloc(align, n * sizeof(T));
+        void * mem = blas_aligned_alloc(align, n * sizeof(T));
         if (!mem)
             throw std::bad_alloc();
 
@@ -55,7 +75,7 @@ struct allocator_helper {
     }
 
     void deallocate(T* p, size_t n) noexcept {
-        free(p);
+        blas_aligned_free(p);
     }
 
     constexpr size_t max_size() const noexcept {

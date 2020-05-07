@@ -20,7 +20,7 @@
 #include <gtest/gtest.h>
 #include <CL/sycl.hpp>
 #include <string>
-#include "config.hpp"
+//#include "onemkl/detail/config.hpp"
 #include "onemkl/onemkl.hpp"
 
 #define MAX_STR 128
@@ -81,9 +81,11 @@ int main(int argc, char** argv) {
     std::set<std::string> unique_devices;
 
     auto platforms = cl::sycl::platform::get_platforms();
+    std::cout << "FOUND " << platforms.size() << " PLATFORMS " << "\n";
     for (auto plat : platforms) {
         if (!plat.is_host()) {
             auto plat_devs = plat.get_devices();
+            std::cout << "FOUND " << plat_devs.size() << " DEVICES " << "\n";
             for (auto dev : plat_devs) {
                 try {
                     if (unique_devices.find(dev.get_info<cl::sycl::info::device::name>()) ==
@@ -103,8 +105,15 @@ int main(int argc, char** argv) {
                         if (dev.is_gpu() && vendor_id == NVIDIA_ID)
                             continue;
 #endif
-                        if (!dev.is_accelerator())
+                        if (!dev.is_accelerator()) {
                             devices.push_back(dev);
+                            std::cout << "DEVICE ADDED: " << dev.get_info<cl::sycl::info::device::name>() << "\n";
+                            std::cout << "DEVICE is_compiler_available: " << dev.get_info<cl::sycl::info::device::is_compiler_available>() << "\n";
+                            std::cout << "DEVICE driver_version: " << dev.get_info<cl::sycl::info::device::driver_version>() << "\n";
+                            std::cout << "DEVICE opencl_c_version: " << dev.get_info<cl::sycl::info::device::opencl_c_version>() << "\n";
+                            std::cout << "DEVICE version: " << dev.get_info<cl::sycl::info::device::version>() << "\n";
+                            std::cout << "DEVICE profile: " << dev.get_info<cl::sycl::info::device::profile>() << "\n";
+                        }
                     }
                 }
                 catch (std::exception const& e) {

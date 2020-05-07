@@ -60,23 +60,12 @@
 class DeviceNamePrint {
 public:
     std::string operator()(testing::TestParamInfo<cl::sycl::device> dev) const {
-        if (dev.param.is_cpu())
-            return std::string("CPU");
-        if (dev.param.is_host())
-            return std::string("HOST");
-        if (dev.param.is_gpu()) {
-            unsigned int vendor_id =
-                static_cast<unsigned int>(dev.param.get_info<cl::sycl::info::device::vendor_id>());
-            switch (vendor_id) {
-                case INTEL_ID:
-                    return std::string("INTELGPU");
-                case NVIDIA_ID:
-                    return std::string("NVIDIAGPU");
-            }
+        std::string dev_name = dev.param.get_info<cl::sycl::info::device::name>();
+        for (std::string::size_type i = 0; i < dev_name.size(); ++i) {
+            if (!isalnum(dev_name[i]))
+                dev_name[i] = '_';
         }
-        if (dev.param.is_accelerator())
-            return std::string("ACCELERATOR");
-        return std::string("UNKNOWN");
+        return dev_name;
     }
 };
 
