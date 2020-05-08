@@ -147,6 +147,12 @@ SUSE Linux Enterprise Server*     | 15             | *Not supported* | *Not supp
 Red Hat Enterprise Linux* (RHEL*) | 8              | *Not supported* | *Not supported*
 Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
 
+#### Windows*
+
+Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU)
+:--- | :--- | :---
+Microsoft Windows* | 10 (64-bit version only) | 10 (64-bit version only)
+Microsoft Windows* Server | 2016, 2019 | *Not supported*
 ---
 
 ### Software Requirements
