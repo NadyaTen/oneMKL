@@ -62,13 +62,7 @@ endif()
 
 if(ENABLE_CUBLAS_BACKEND)
   add_dependencies(test_main_ct onemkl_blas_cublas)
-  if(BUILD_SHARED_LIBS)
-    list(APPEND ONEMKL_LIBRARIES onemkl_blas_cublas)
-  else()
-    list(APPEND ONEMKL_LIBRARIES -foffload-static-lib=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${onemkl_blas_cublas_libname})
-    find_package(cuBLAS REQUIRED)
-    list(APPEND ONEMKL_LIBRARIES ONEMKL::cuBLAS::cuBLAS)
-  endif()
+  list(APPEND ONEMKL_LIBRARIES onemkl_blas_cublas)
 endif()
 
 target_link_libraries(test_main_ct PUBLIC
