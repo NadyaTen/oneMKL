@@ -292,6 +292,16 @@ cmake --build .
 ctest
 cmake --install . --prefix <path_to_install_dir>
 ```
+- On Windows*
+```bash
+cmake .. -G Ninja  -DCMAKE_TOOLCHAIN_FILE="..\cmake\toolchain\intel_clang-cl-toolchain.cmake"  
+                  [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if enviroment variable MKLROOT is not set
+                  [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]     # required only for testing
+
+ninja 
+ctest
+cmake --install . --prefix <path_to_install_dir>
+```
 
 ### Build Options
 You can specify build options using `-D<cmake_option>=<value>`. The following table provides the list of options supported by CMake.
