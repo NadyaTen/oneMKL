@@ -226,32 +226,21 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
         </tr>
         <tr>
             <td rowspan=8> Windows* </td>
-            <td> Any </td>
-            <td colspan=2 align="center"> Microsoft Visual Studio* 2017, 2019 with "Desktop development with C++" workload installed </td>
             <tr>
                 <td rowspan=2> Intel CPU </td>
-                <td rowspan=2> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
                 <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
                 <tr>
                     <td> Intel(R) oneAPI Math Kernel Library </td>
                 </tr>
             </tr>
             <td rowspan=3> Intel GPU </td>
-            <td rowspan=2> Intel(R) oneAPI DPC++ Compiler </td>
             <td> Intel(R) oneAPI DPC++ Compiler </td>
             <tr>
                 <td> Intel GPU driver </td>
             </tr>
             <tr>
-                <td> Intel GPU driver </td>
                 <td> Intel(R) oneAPI Math Kernel Library </td>
             </tr>
-            <td rowspan=2> NVIDIA GPU </td>
-            <td rowspan=2> Intel project for LLVM* technology </td>
-            <td> Intel project for LLVM* technology </td>
-            <tr>
-                <td> NVIDIA CUDA SDK </td>
-            </tr>    
         </tr>    
     </tbody>
 </table>
