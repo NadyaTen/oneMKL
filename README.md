@@ -105,7 +105,14 @@ Supported domains: BLAS
  Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
  Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
  NVIDIA GPU | NVIDIA cuBLAS | Dynamic, Static
- 
+
+#### Windows*
+
+ Backend | Library | Supported Link Type
+ :------| :-------| :------------------
+ Intel CPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+ Intel GPU | Intel(R) oneAPI Math Kernel Library | Dynamic, Static
+  
 ---
 
 ## Support and Requirements
