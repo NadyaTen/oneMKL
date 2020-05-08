@@ -121,6 +121,13 @@ Supported domains: BLAS
     - Intel(R) Processor Graphics GEN9
     - NVIDIA(R) TITAN RTX(TM) (Not tested with other NVIDIA GPU families and products.)
 
+#### Windows*
+- CPU
+    - Intel Atom(R) Processors
+    - Intel(R) Core(TM) Processor Family
+    - Intel(R) Xeon(R) Processor Family
+- Accelerators
+    - Intel(R) Processor Graphics Gen9
 ---
 ### Supported Operating Systems
 
