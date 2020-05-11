@@ -13,7 +13,7 @@
 
 ## Introduction
 
-oneMKL interfaces is an open-source implementation of oneMKL Data Parallel C++ (DPC++) interfaces according to [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html) that can work with multiple devices (backends) using device specific libraries underneath.
+oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel C++ (DPC++) interface according to the [oneMKL specification](https://spec.oneapi.com/versions/latest/elements/oneMKL/source/index.html). It works with multiple devices (backends) using device-specific libraries underneath.
 
 <table>
     <thead>
@@ -46,7 +46,7 @@ oneMKL interfaces is an open-source implementation of oneMKL Data Parallel C++ (
 
 There are two oneMKL selector layer implementations:
 
-- **Run-time dispatching**: The application is linked with the onemkl library and the required backend is loaded at run-time based on device vendor (all libraries should be dynamic).
+- **Run-time dispatching**: The application is linked with the oneMKL library and the required backend is loaded at run-time based on device vendor (all libraries should be dynamic).
 
 Example of app.cpp with run-time dispatching:
 
@@ -70,7 +70,7 @@ $> clang++ -fsycl –I$ONEMKL/include app.cpp
 $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl
 ```
 
-- **Compile-time dispatching**: The application uses a templated API where the template parameters specify the required backends and third-party libraries and the application is linked with required onemkl backend wrapper libraries (libraries can be static or dynamic).
+- **Compile-time dispatching**: The application uses a templated API where the template parameters specify the required backends and third-party libraries and the application is linked with the required oneMKL backend wrapper libraries (libraries can be static or dynamic).
 
 Example of app.cpp with compile-time dispatching:
 
