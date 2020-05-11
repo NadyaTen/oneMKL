@@ -294,6 +294,7 @@ cmake --install . --prefix <path_to_install_dir>
 ```
 - On Windows*
 ```bash
+# Inside <path to onemkl>
 md build && cd build
 cmake .. -G Ninja  -DCMAKE_TOOLCHAIN_FILE="..\cmake\toolchain\intel_clang-cl-toolchain.cmake"  
                   [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if enviroment variable MKLROOT is not set
