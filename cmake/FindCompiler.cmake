@@ -28,6 +28,7 @@ if(is_dpcpp)
   find_package_handle_standard_args(SYCL DEFAULT_MSG)
 endif()
 
+message("AAAAAAA SYCL_FOUND = " ${SYCL_FOUND})
 if(SYCL_FOUND AND is_dpcpp)
   # Workaround for internal compiler error during linking if -fsycl is used
   get_filename_component(SYCL_BINARY_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
