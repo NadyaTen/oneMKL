@@ -79,8 +79,7 @@ int test(const device& dev, int64_t N, int64_t incx) {
 #ifdef CALL_RT_API
         oneapi::mkl::blas::asum(main_queue, N, x_buffer, incx, result_buffer);
 #else
-        TEST_RUN_CT(main_queue, oneapi::mkl::blas::asum,
-                    (main_queue, N, x_buffer, incx, result_buffer));
+        TEST_RUN_CT(main_queue, oneapi::mkl::blas::asum, (BACKEND_SELECTOR(main_queue), N, x_buffer, incx, result_buffer));
 #endif
     }
     catch (exception const& e) {

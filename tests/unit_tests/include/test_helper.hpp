@@ -43,36 +43,58 @@
     } while (0);
 
 #ifdef ENABLE_MKLCPU_BACKEND
-#define TEST_RUN_INTELCPU(q, func, args) func<oneapi::mkl::backend::mklcpu> args
+#define TEST_RUN_INTELCPU(func, args) func args
 #else
-#define TEST_RUN_INTELCPU(q, func, args)
+#define TEST_RUN_INTELCPU(func, args)
 #endif
 
 #ifdef ENABLE_MKLGPU_BACKEND
-#define TEST_RUN_INTELGPU(q, func, args) func<oneapi::mkl::backend::mklgpu> args
+#define TEST_RUN_INTELGPU(func, args) func args
 #else
-#define TEST_RUN_INTELGPU(q, func, args)
+#define TEST_RUN_INTELGPU(func, args)
 #endif
 
 #ifdef ENABLE_CUBLAS_BACKEND
-#define TEST_RUN_NVIDIAGPU(q, func, args) func<oneapi::mkl::backend::cublas> args
+#define TEST_RUN_NVIDIAGPU(func, args) func args
 #else
-#define TEST_RUN_NVIDIAGPU(q, func, args)
+#define TEST_RUN_NVIDIAGPU(func, args)
 #endif
 
 #define TEST_RUN_CT(q, func, args)                                             \
     do {                                                                       \
         if (q.is_host() || q.get_device().is_cpu())                            \
-            TEST_RUN_INTELCPU(q, func, args);                                  \
+            TEST_RUN_INTELCPU(func, args);                                     \
         else if (q.get_device().is_gpu()) {                                    \
             unsigned int vendor_id = static_cast<unsigned int>(                \
                 q.get_device().get_info<cl::sycl::info::device::vendor_id>()); \
             if (vendor_id == INTEL_ID)                                         \
-                TEST_RUN_INTELGPU(q, func, args);                              \
+                TEST_RUN_INTELGPU(func, args);                                 \
             else if (vendor_id == NVIDIA_ID)                                   \
-                TEST_RUN_NVIDIAGPU(q, func, args);                             \
+                TEST_RUN_NVIDIAGPU(func, args);                                \
         }                                                                      \
     } while (0);
+
+
+#define IS_INTEL_GPU(dev)                                                                  \
+    (dev.is_gpu() &&                                                                       \
+     static_cast<unsigned int>(get_info<cl::sycl::info::device::vendor_id>()) == INTEL_ID)
+
+#define IS_NVIDIA_GPU(dev)                                                                 \
+    (dev.is_gpu() &&                                                                       \
+     static_cast<unsigned int>(get_info<cl::sycl::info::device::vendor_id>()) == NVIDIA_ID)
+
+#define BACKEND_SELECTOR(q)                                                      \
+    ((q.is_host() || q.get_device().is_cpu())                                    \
+     ? oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu>(q)            \
+     : (IS_INTEL_GPU(q.get_device())                                             \
+        ? oneapi::mkl::backend_selector<oneapi::mkl::backend::mklgpu>(q)         \
+        : (IS_NVIDIA_GPU(q.get_device())                                         \
+           ? oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas>(q)      \
+           : oneapi::mkl::backend_selector<oneapi::mkl::backend::unsupported>(q) \
+          )                                                                      \
+       )                                                                         \
+    )
+
 
 class DeviceNamePrint {
 public:
